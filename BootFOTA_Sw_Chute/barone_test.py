@@ -1,7 +1,6 @@
 import socket
 import random
 import time
-import keyboard
 
 # Thông tin máy chủ
 HOST = "192.168.1.200"
@@ -205,9 +204,6 @@ if __name__ == "__main__":
 
     while vRunApp:
         time.sleep(0.001)
-        if keyboard.is_pressed('q'):
-            print("Đã thoát!")
-            break
         
         if (time.time()-last_increase_qty) >= 1:
             qty_packet += 1
