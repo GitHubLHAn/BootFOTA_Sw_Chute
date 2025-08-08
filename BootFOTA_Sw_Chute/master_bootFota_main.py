@@ -1,5 +1,5 @@
 import socket
-import random
+import os
 import time
 
 from datetime import datetime
@@ -480,7 +480,13 @@ def analysisHex_masterFW(type="halfword"):
     # Analysing hex file--------------------------------------------------------------------
     print("\n>>>>>>>>>>>>>> ANALYSING HEX FILE   \n")
     
-    path_firmware = "E:\DEV_SPACE__\Chute_Master_FW_developing\Chute_Master_FW_v4.1_KV3_KV1_Developing\MDK-ARM\Chute_Master_Firmware\Chute_Master_Firmware.hex"
+
+    path_firmware = input("> Enter the path of firmware hex file: ")
+    
+    if os.path.isfile(path_firmware) == False:
+        print(f"-> [Error] - File {path_firmware} not found !")
+        path_firmware = "E:\DEV_SPACE__\Github_Desktop_Workspace\Chute_Master_Fw\Chute_Master_FW_v4.2\MDK-ARM\Chute_Master_Firmware\Chute_Master_Firmware.hex"
+        print(f"-> [INFOR] - Using default path: {path_firmware}\n")
     
     num_Line, list_data_flash, size_Hex, addr_start, addr_end = analysis_hex(path_firmware, type)
 
@@ -513,8 +519,9 @@ if __name__ == "__main__":
     qty_master = int(input("> Enter Quantity Master Boot: " ) )
     print("")
     ID_master_start = int(input("> Enter the First ID Master: " ) )
+    print("")  
+    version_master = int(input("> Enter the Version Master: " ))
     print("")
-    
     
     # Tạo socket UDP
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -565,7 +572,7 @@ if __name__ == "__main__":
         
         time.sleep(1)
         # -------------------------------------------------------------------------------------------
-        version_master = 41
+        
         
         rlt = run_Application_fw_master(ID_master_input, udp_params, addr_start_flash, version_master, MASTER_CHUTE_CIRCUIT)
         
