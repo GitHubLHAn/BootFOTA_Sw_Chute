@@ -56,7 +56,7 @@ def build_mess_reset_master(ID_master:int)->bytearray:
 # ======================================================================================================
 def receive_reset_master_response(UDP_SOCKET, ID_master):
     try:
-        data_read, _ = UDP_SOCKET['upd_socket'].recvfrom(256)
+        data_read, _ = UDP_SOCKET.socket.recvfrom(256) 
         
         id_m = data_read[0] & 0x0F
         
@@ -498,14 +498,18 @@ def analysisHex_masterFW(type="halfword"):
     
     return list_data_flash, addr_start, addr_end
     
-      
+def log_to_file(log_message: str, filename: str = "result_boot_chute_master.txt"):
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(filename, "a", encoding="utf-8") as f:
+        f.write(f"[{now}] {log_message}\n")
+              
 #######################################################################################################
 #######################################################################################################
 #######################################################################################################
 #######################################################################################################
 
 if __name__ == "__main__":
-    print("\n                          -------------> START PROGRAM <-----------\n")
+    print("\n                          -------------> BOOT FOTA MASTER <-----------\n")
     
     list_hex_data, addr_start_flash, addr_end_flash = analysisHex_masterFW("word")
     
@@ -588,11 +592,14 @@ if __name__ == "__main__":
         
         if mode_current == APPLICATION_FW_RUNNING:
             print(f"\n======> UPDATED NEW APPLICATION ON MASTER '{ID_master_input}', "
-                f"HOST '{HOST_INPUT}', PORT '{HOST_INPUT}' SUCCESS TOTALLY !\n")
+                f"HOST '{HOST_INPUT}', PORT '{PORT_INPUT}' SUCCESS TOTALLY !\n")
+            log_to_file(f"SUCCESS: UPDATED NEW APPLICATION ON MASTER '{ID_master_input}', HOST '{HOST_INPUT}', PORT '{PORT_INPUT}'")
+
             ID_master_input += 1
         else:
             print(f"\nxxxxxx> UPDATED NEW APPLICATION ON MASTER {ID_master_input}, "
-                f"HOST '{HOST_INPUT}', PORT '{HOST_INPUT}' FAILURE xxxxx\n")
+                f"HOST '{HOST_INPUT}', PORT '{PORT_INPUT}' FAILURE xxxxx\n")
+            log_to_file(f"FAILURE: UPDATED NEW APPLICATION ON MASTER '{ID_master_input}', HOST '{HOST_INPUT}', PORT '{PORT_INPUT}'")
         
         time.sleep(5)
     
