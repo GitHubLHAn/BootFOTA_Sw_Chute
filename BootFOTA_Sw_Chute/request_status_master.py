@@ -11,8 +11,7 @@ if __name__ == "__main__":
     print("")
     PORT_INPUT = int(input("> Enter the PORT : " ))
     print("")
-    ID_master = int(input("> Enter ID Master: " ) )
-    print("")
+    
     
     
     # Tạo socket UDP
@@ -22,7 +21,10 @@ if __name__ == "__main__":
     udp_params = UdpConnection(udp_socket, HOST_INPUT, PORT_INPUT)
     
     while True:
-        # Start Booting by FOTA *****************************
+        print("------------------- REQUEST STATUS SLAVE -------------------")
+        ID_master = int(input("> Enter ID Master: " ) )
+        print("")
+        
         request_status_master(ID_master=ID_master, UDP_SOCKET=udp_params)
         
         try:

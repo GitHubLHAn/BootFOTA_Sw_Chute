@@ -9,20 +9,18 @@ import time
 if __name__ == "__main__":
     print("\n            -------------> REQUEST STATUS SLAVE <-----------\n")
 
-    # print("")
-    # HOST_INPUT = "192.168.1." + input("> Enter the HOST : 192.168.1." )
-    # print("")
-    # PORT_INPUT = int(input("> Enter the PORT : " ))
-    # print("")
-    # ID_master = int(input("> Enter ID Master: " ) )
-    # print("")
-    # ID_slave = int(input("> Enter ID Slave: " ) )
-    # print("")
-    
-    HOST_INPUT = "192.168.1.200"
-    PORT_INPUT = 1111
-    ID_master = 1
-    ID_slave = 1
+    print("")
+    HOST_INPUT = "192.168.1." + input("> Enter the HOST : 192.168.1." )
+    print("")
+    PORT_INPUT = int(input("> Enter the PORT : " ))
+    print("")
+    ID_master = int(input("> Enter ID Master: " ) )
+    print("")
+  
+    # HOST_INPUT = "192.168.1.200"
+    # PORT_INPUT = 1111
+    # ID_master = 1
+    # ID_slave = 1
     
     # Tạo socket UDP
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -49,14 +47,21 @@ if __name__ == "__main__":
         exit(1)
     
     while True:
-        # Start Booting by FOTA *****************************
+        print("------------------- REQUEST STATUS SLAVE -------------------")
+        ID_slave = int(input("> Enter ID Slave: " ) )
+        print("")
+        
         request_status_slave(ID_master, ID_slave, UDP_SOCKET=udp_params)
         
         try:
             ctn = input("\n> Do you want to continue? (y/n): ")
             if ctn.lower() != 'y':
+                time.sleep(0.5)
+                rlt = reset_master(ID_master=ID_master, UDP_SOCKET=udp_params)
                 print("Exiting...")
                 break
         except KeyboardInterrupt:
+            time.sleep(0.5)
+            rlt = reset_master(ID_master=ID_master, UDP_SOCKET=udp_params)
             print("\nExiting due to keyboard interrupt...")
             break

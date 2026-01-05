@@ -511,7 +511,7 @@ def analysisHex_slaveFW(type="halfword"):
     # Analysing hex file--------------------------------------------------------------------
     print("\n>>>>>>>>>>>>>> ANALYSING HEX FILE   \n")
     
-    path_firmware = input("> Enter the path of firmware hex file: ")
+    path_firmware = input("> Enter the path of SLAVE firmware hex file: ")
     
     if os.path.isfile(path_firmware) == False:
         print(f"-> [Error] - File {path_firmware} not found !")
@@ -528,15 +528,15 @@ def analysisHex_slaveFW(type="halfword"):
     
     return list_data_flash, addr_start, addr_end
  
+# ======================================================================================================  
 def log_to_file(log_message: str, filename: str = "result_boot_chute_slave.txt"):
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(filename, "a", encoding="utf-8") as f:
         f.write(f"[{now}] {log_message}\n")
            
-#######################################################################################################
-#######################################################################################################
-#######################################################################################################
-#######################################################################################################
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 def boot_progress(ID_master, SQ_slave, udp_params):
     print(f"\n        -------> BOOTING SLAVE {SQ_slave} on MASTER {ID_master} <------\n")
@@ -604,7 +604,6 @@ def boot_progress(ID_master, SQ_slave, udp_params):
 
         return False
 
-
 #######################################################################################################
 #######################################################################################################
 #######################################################################################################
@@ -623,8 +622,12 @@ if __name__ == "__main__":
     print("")
     ID_master = int(input("> Enter ID Master: " ) )
     print("")  
-    SQ_slave = int(input(f"> Enter Sequence of Slave in line Master {ID_master}: " ) )
-    print("") 
+    qty_slave = int(input("> Enter Quantity Slave Boot: " ))
+    print("")
+    SQ_slave_start = int(input("> Enter the First Sequence Slave: " ) )
+    print("")  
+    # SQ_slave = int(input(f"> Enter Sequence of Slave in line Master {ID_master}: " ) )
+    # print("") 
     version_slave = int(input("> Enter the Version Slave: " ))
     print("")
     
@@ -643,13 +646,23 @@ if __name__ == "__main__":
     time.sleep(1)
     
     # Run mode Forward on MASTER
-    run_FWD_master(ID_master=ID_master, UDP_SOCKET=udp_params)
+    rlt = run_FWD_master(ID_master=ID_master, UDP_SOCKET=udp_params)
     
     if not rlt:
         reset_master(ID_master=ID_master, UDP_SOCKET=udp_params)
         exit(1)
     
-    rlt = boot_progress(ID_master=ID_master, SQ_slave=SQ_slave, udp_params=udp_params)
+    SQ_slave_input = SQ_slave_start
+    rlt = True
+    while SQ_slave_input <= SQ_slave_start+qty_slave-1:
+        ctn = "1"
+        while ctn != "":
+            print(f"\n=================> BOOTING SLAVE {SQ_slave_input} ON MASTER {ID_master} <=================\n")
+            ctn = input("> Press Enter to continue booting Slave "
+                        f"{SQ_slave_input} on Master {ID_master}")
+            
+        rlt = boot_progress(ID_master=ID_master, SQ_slave=SQ_slave_input, udp_params=udp_params)
+        time.sleep(2)
     
     time.sleep(0.5)
     

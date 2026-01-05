@@ -481,7 +481,7 @@ def analysisHex_masterFW(type="halfword"):
     print("\n>>>>>>>>>>>>>> ANALYSING HEX FILE   \n")
     
 
-    path_firmware = input("> Enter the path of firmware hex file: ")
+    path_firmware = input("> Enter the path of MASTER firmware hex file: ")
     
     if os.path.isfile(path_firmware) == False:
         print(f"-> [Error] - File {path_firmware} not found !")
@@ -537,6 +537,10 @@ if __name__ == "__main__":
     rlt = True
     while ID_master_input <= ID_master_start+qty_master-1:
         # Start Booting by FOTA *****************************
+        ctn = "1"
+        while ctn != "":
+            ctn = input(f"\n> Press Enter to continue to BOOT FOTA PROCESS on MASTER {ID_master_input} ...")
+
         mode_current = request_status_master(ID_master=ID_master_input, UDP_SOCKET=udp_params)
             
         while mode_current == APPLICATION_FW_RUNNING:       # application fw is running on chip

@@ -44,8 +44,6 @@ def merge_data_pairs(list_halfword):
     list_hex_word = []
     
     # length = len(list_halfword)
-    
-    
 
     for i in range(0, len(list_halfword),2):
         if i + 1 < len(list_halfword):  # đảm bảo có cặp
