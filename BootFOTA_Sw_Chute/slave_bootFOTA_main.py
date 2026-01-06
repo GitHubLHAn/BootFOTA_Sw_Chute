@@ -123,7 +123,7 @@ def receive_status_slave(UDP_SOCKET, ID_master, ID_slave):
                     type_ = "Slave Chute"
                     
                 print(f"-> [Information]  - Type of circuit: {type_} - ")
-                print(f"                  - Identify: {id_m}  ")
+                print(f"                  - Identify: {id_sl}  ")
                 print(f"                  - Current Mode: {mode}  ")
                 print(f"                  - Version: {round(ver_app/10,1)} ")
                 print(f"                  - Updated on: {day}/{mon}/{year}  ")
@@ -245,22 +245,23 @@ def receive_runApp_fw_mess_slave(UDP_SOCKET, ID_master, SQ_slave):
 # ======================================================================================================
 def build_mess_run_bootFOTA_slave(ID_master: int, ID_slave: int) -> bytearray:
     
-    data_slave = bytearray(4)
+    data_slave = bytearray(5)
     
     data_slave[0] = ID_slave                    # ID slave
     data_slave[1] = 0x04                     # Command to request status
     data_slave[2] = CMD_RUN_BOOTLOADER       # get status cmd
-    data_slave[3] = crc8(data_slave, 4)
+    data_slave[3] = data_slave[0] + data_slave[1] +data_slave[2]                   
+    data_slave[4] = crc8(data_slave, 5)
     
-    data_master = bytearray(7)
+    data_master = bytearray(8)
     
     data_master[0] = 0xE0 | (ID_master&0x0F)
-    data_master[1] = 7
+    data_master[1] = 8
     
-    for i in range(0, 4):
+    for i in range(0, 5):
         data_master[i+2] = data_slave[i]
         
-    data_master[6] = crc8(data_master, 7)
+    data_master[7] = crc8(data_master, 8)
 
     return data_master
 
@@ -302,7 +303,7 @@ def receive_runFOTA_slave_response(UDP_SOCKET, ID_master, SQ_slave):
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-def run_FWD_master(ID_master, UDP_SOCKET={}, retry=100):
+def run_FWD_master(ID_master, UDP_SOCKET={}, retry=10):
     # 
     print(f"\n>>>>>>>>>>>>>> RUN FORWADER MODE MASTER {ID_master}, "
             f"HOST '{UDP_SOCKET.host}', PORT '{UDP_SOCKET.port}'\n")
@@ -325,7 +326,7 @@ def run_FWD_master(ID_master, UDP_SOCKET={}, retry=100):
     return False
 
 # ======================================================================================================
-def request_status_slave(ID_master, ID_slave, UDP_SOCKET={}, retry=100):
+def request_status_slave(ID_master, ID_slave, UDP_SOCKET={}, retry=10):
     # 
     print(f"\n>>>>>>>>>>>>>> REQUEST STATUS SLAVE {ID_slave}, MASTER {ID_master}, "
             f"HOST '{UDP_SOCKET.host}', PORT '{UDP_SOCKET.port}'\n")
@@ -347,7 +348,7 @@ def request_status_slave(ID_master, ID_slave, UDP_SOCKET={}, retry=100):
     return False
 
 # ======================================================================================================
-def start_bootFota_process(ID_master, SQ_slave, UDP_SOCKET={}, addr_start=0, addr_end=0, retry=100):
+def start_bootFota_process(ID_master, SQ_slave, UDP_SOCKET={}, addr_start=0, addr_end=0, retry=10):
     # Send start boot command to Slave ------------------------------------------------------------
     print(f"\n>>>>>>>>>>>>>> START BOOT FOTA PROCESS ON SLAVE {SQ_slave}, MASTER {ID_master}, "
           f"HOST '{UDP_SOCKET.host}', PORT '{UDP_SOCKET.port}'\n") 
@@ -482,7 +483,7 @@ def run_Application_fw_slave(ID_master, SQ_slave, UDP_SOCKET, stack_pointer, ver
     return False
 
 # ======================================================================================================   
-def run_bootFOTA_Fw_slave(ID_master, SQ_slave, UDP_SOCKET={}, retry=100):
+def run_bootFOTA_Fw_slave(ID_master, SQ_slave, UDP_SOCKET={}, retry=10):
     # Send FOTA boot command to Master ------------------------------------------------------------
     print(f"\n>>>>>>>>>>>>>> RUN BOOT FOTA FIRMWARE ON SLAVE {SQ_slave}, MASTER {ID_master}, "
           f"HOST '{UDP_SOCKET.host}', PORT '{UDP_SOCKET.port}'\n")
@@ -616,7 +617,8 @@ if __name__ == "__main__":
     time.sleep(1)
     
     print("")
-    HOST_INPUT = "192.168.1." + input("> Enter the HOST : 192.168.1." )
+    HOST_INPUT = "192.168.1.200"
+    print(HOST_INPUT)
     print("")
     PORT_INPUT = int(input("> Enter the PORT : " ))
     print("")
@@ -626,15 +628,19 @@ if __name__ == "__main__":
     print("")
     SQ_slave_start = int(input("> Enter the First Sequence Slave: " ) )
     print("")  
-    # SQ_slave = int(input(f"> Enter Sequence of Slave in line Master {ID_master}: " ) )
-    # print("") 
     version_slave = int(input("> Enter the Version Slave: " ))
     print("")
+    
+    # HOST_INPUT = "192.168.1.200"
+    # PORT_INPUT = 1112
+    # ID_master = 1
+    # qty_slave = 1
+    # SQ_slave_start = 1
+    # version_slave = 37
     
     # Tạo socket UDP
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp_socket.settimeout(1)  # Timeout cho việc nhận dữ liệu
-    
     udp_params = UdpConnection(udp_socket, HOST_INPUT, PORT_INPUT)
     
     # Reset master before starting

@@ -281,7 +281,7 @@ def receive_runApp_fw_mess(UDP_SOCKET, ID_master):
 #######################################################################################################
 #######################################################################################################
 
-def reset_master(ID_master, retry=100, UDP_SOCKET={}):
+def reset_master(ID_master, retry=10, UDP_SOCKET={}):
     # Send reset mess to Master----------------------------------------------------------------------
     print(f"\n>>>>>>>>>>>>>> RESET MASTER {ID_master}, HOST '{UDP_SOCKET.host}', "
           f"PORT '{UDP_SOCKET.port}'\n")
@@ -305,7 +305,7 @@ def reset_master(ID_master, retry=100, UDP_SOCKET={}):
     return False
 
 # ======================================================================================================
-def request_status_master(ID_master, UDP_SOCKET={}, retry=100):
+def request_status_master(ID_master, UDP_SOCKET={}, retry=10):
     # 
     print(f"\n>>>>>>>>>>>>>> REQUEST STATUS MASTER {ID_master}, "
             f"HOST '{UDP_SOCKET.host}', PORT '{UDP_SOCKET.port}'\n")
@@ -329,7 +329,7 @@ def request_status_master(ID_master, UDP_SOCKET={}, retry=100):
     return False
     
 # ======================================================================================================   
-def run_bootFOTA_Fw_master(ID_master, UDP_SOCKET={}, retry=100):
+def run_bootFOTA_Fw_master(ID_master, UDP_SOCKET={}, retry=10):
     # Send FOTA boot command to Master ------------------------------------------------------------
     print(f"\n>>>>>>>>>>>>>> RUN BOOT FOTA FIRMWARE ON MASTER {ID_master}, "
           f"HOST '{UDP_SOCKET.host}', PORT '{UDP_SOCKET.port}'\n")
@@ -354,7 +354,7 @@ def run_bootFOTA_Fw_master(ID_master, UDP_SOCKET={}, retry=100):
     return False
 
 # ======================================================================================================
-def start_bootFota_process(ID_master, UDP_SOCKET={}, addr_start=0, addr_end=0, retry=100):
+def start_bootFota_process(ID_master, UDP_SOCKET={}, addr_start=0, addr_end=0, retry=10):
     # Send start boot command to Master ------------------------------------------------------------
     print(f"\n>>>>>>>>>>>>>> START BOOT FOTA PROCESS ON MASTER {ID_master}, "
           f"HOST '{UDP_SOCKET.host}, PORT '{UDP_SOCKET.port}'\n") 
@@ -479,7 +479,6 @@ def run_Application_fw_master(ID_master, UDP_SOCKET, stack_pointer, version, typ
 def analysisHex_masterFW(type="halfword"):
     # Analysing hex file--------------------------------------------------------------------
     print("\n>>>>>>>>>>>>>> ANALYSING HEX FILE   \n")
-    
 
     path_firmware = input("> Enter the path of MASTER firmware hex file: ")
     
@@ -547,7 +546,7 @@ if __name__ == "__main__":
             rlt = run_bootFOTA_Fw_master(ID_master_input, udp_params, retry=5)
             print("\n>>>>>>>>>>>>>> WAIT MCU RESET AND RUNNING BOOT FOTA.... \n") 
             time.sleep(2) 
-            mode_current = request_status_master(ID_master=ID_master_input, UDP_SOCKET=udp_params, retry=100)
+            mode_current = request_status_master(ID_master=ID_master_input, UDP_SOCKET=udp_params, retry=5)
             
         if mode_current == BOOTFOTA_FW_RUNNING:
             rlt = True
@@ -570,7 +569,6 @@ if __name__ == "__main__":
         time.sleep(1)
         # -------------------------------------------------------------------------------------------
         
-
         rlt = flashing_master_process(ID_master_input, udp_params, list_hex_data)
         
         if rlt == False:
@@ -580,8 +578,7 @@ if __name__ == "__main__":
         
         time.sleep(1)
         # -------------------------------------------------------------------------------------------
-        
-        
+
         rlt = run_Application_fw_master(ID_master_input, udp_params, addr_start_flash, version_master, MASTER_CHUTE_CIRCUIT)
         
         if rlt == False:

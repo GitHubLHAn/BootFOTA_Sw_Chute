@@ -10,7 +10,8 @@ if __name__ == "__main__":
     print("\n            -------------> REQUEST STATUS SLAVE <-----------\n")
 
     print("")
-    HOST_INPUT = "192.168.1." + input("> Enter the HOST : 192.168.1." )
+    HOST_INPUT = "192.168.1.200"
+    print(HOST_INPUT)
     print("")
     PORT_INPUT = int(input("> Enter the PORT : " ))
     print("")
@@ -20,7 +21,6 @@ if __name__ == "__main__":
     # HOST_INPUT = "192.168.1.200"
     # PORT_INPUT = 1111
     # ID_master = 1
-    # ID_slave = 1
     
     # Tạo socket UDP
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -33,13 +33,10 @@ if __name__ == "__main__":
     
     if not rlt:
         exit(1)
+    
+    # Wait a moment after reset 
+    time.sleep(1.5)
         
-    
-    # exit(1)
-    time.sleep(1)
-    
-    # stop = input("\n> Press Enter to continue to run Forward mode on MASTER ...")
-    
     # Run mode Forward on MASTER
     run_FWD_master(ID_master=ID_master, UDP_SOCKET=udp_params)
     
@@ -47,21 +44,15 @@ if __name__ == "__main__":
         exit(1)
     
     while True:
-        print("------------------- REQUEST STATUS SLAVE -------------------")
-        ID_slave = int(input("> Enter ID Slave: " ) )
-        print("")
-        
-        request_status_slave(ID_master, ID_slave, UDP_SOCKET=udp_params)
-        
         try:
-            ctn = input("\n> Do you want to continue? (y/n): ")
-            if ctn.lower() != 'y':
-                time.sleep(0.5)
-                rlt = reset_master(ID_master=ID_master, UDP_SOCKET=udp_params)
-                print("Exiting...")
-                break
+            print("------------------- REQUEST STATUS SLAVE -------------------")
+            ID_slave = int(input("> Enter ID Slave: " ) )
+            if ID_slave == "":
+                continue             
+            request_status_slave(ID_master, ID_slave, UDP_SOCKET=udp_params) 
+            
         except KeyboardInterrupt:
             time.sleep(0.5)
-            rlt = reset_master(ID_master=ID_master, UDP_SOCKET=udp_params)
-            print("\nExiting due to keyboard interrupt...")
+            reset_master(ID_master=ID_master, UDP_SOCKET=udp_params)
+            print("\n->Exiting due to keyboard interrupt...\n")
             break
