@@ -668,6 +668,17 @@ if __name__ == "__main__":
                         f"{SQ_slave_input} on Master {ID_master}")
             
         rlt = boot_progress(ID_master=ID_master, SQ_slave=SQ_slave_input, udp_params=udp_params)
+        if rlt == False:
+            n = input("[FAILURE] - BOOTING PROCESS FAIL, press 'a' to try again or 'n' to skip this slave!")
+            if n == "a":
+                continue    
+            else:
+                print(f"-> [INFOR] - Skip BOOTING SLAVE {SQ_slave_input} and continue to next slave !")
+                log_to_file(f"SKIP: BOOTING SLAVE {SQ_slave_input} on MASTER {ID_master} FAILURE, SKIP TO NEXT SLAVE !")
+                SQ_slave_input+=1
+                continue
+        else:
+            SQ_slave_input+=1
         time.sleep(2)
     
     time.sleep(0.5)
