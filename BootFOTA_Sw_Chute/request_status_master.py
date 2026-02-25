@@ -7,7 +7,8 @@ if __name__ == "__main__":
     print("\n            -------------> REQUEST STATUS MASTER <-----------\n")
 
     print("")
-    HOST_INPUT = "192.168.1." + input("> Enter the HOST : 192.168.1." )
+    HOST_INPUT = "192.168.1.254"
+    print("Host: ", HOST_INPUT)
     print("")
     PORT_INPUT = int(input("> Enter the PORT : " ))
     print("")
