@@ -291,7 +291,7 @@ def reset_master(ID_master, retry=10, UDP_SOCKET={}):
         sendto_master(mess_reset, UDP_SOCKET)
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_reset))
         
-        time.sleep(0.01)
+        # time.sleep(0.001)
         
         result = receive_reset_master_response(UDP_SOCKET, ID_master)
         
@@ -314,7 +314,7 @@ def request_status_master(ID_master, UDP_SOCKET={}, retry=10):
         sendto_master(mess_status, UDP_SOCKET)
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_status))
         
-        time.sleep(0.01)
+        # time.sleep(0.001)
         
         current_mode, result = receive_status_master(UDP_SOCKET, ID_master)
         
@@ -339,7 +339,7 @@ def run_bootFOTA_Fw_master(ID_master, UDP_SOCKET={}, retry=10):
         sendto_master(mess_fota, UDP_SOCKET)
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_fota))
         
-        time.sleep(0.01)
+        # time.sleep(0.001)
         
         result = receive_runFOTA_master_response(UDP_SOCKET, ID_master)
         
@@ -364,7 +364,7 @@ def start_bootFota_process(ID_master, UDP_SOCKET={}, addr_start=0, addr_end=0, r
         sendto_master(mess_start, UDP_SOCKET)
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_start))
         
-        time.sleep(0.01)
+        # time.sleep(0.001)
         
         result = receive_startBootFota_response(UDP_SOCKET, ID_master)
         
@@ -407,7 +407,7 @@ def flashing_master_process(ID_master, UDP_SOCKET={}, _list_hex_data=[], retry=1
         sendto_master(mess_flash_data, UDP_SOCKET)    
         # print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_flash_data))
     
-        time.sleep(0.01)
+        # time.sleep(0.001)
         
         try:
             data_read, _ = UDP_SOCKET.socket.recvfrom(256)
@@ -462,7 +462,7 @@ def run_Application_fw_master(ID_master, UDP_SOCKET, stack_pointer, version, typ
         sendto_master(mess_run_app, UDP_SOCKET)    
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_run_app))
     
-        time.sleep(0.01)
+        # time.sleep(0.001)
     
         result = receive_runApp_fw_mess(UDP_SOCKET, ID_master)
         
@@ -545,7 +545,7 @@ if __name__ == "__main__":
         while mode_current == APPLICATION_FW_RUNNING:       # application fw is running on chip
             rlt = run_bootFOTA_Fw_master(ID_master_input, udp_params, retry=5)
             print("\n>>>>>>>>>>>>>> WAIT MCU RESET AND RUNNING BOOT FOTA.... \n") 
-            time.sleep(2) 
+            time.sleep(1) 
             mode_current = request_status_master(ID_master=ID_master_input, UDP_SOCKET=udp_params, retry=5)
             
         if mode_current == BOOTFOTA_FW_RUNNING:
@@ -553,7 +553,7 @@ if __name__ == "__main__":
                    
         if rlt == False:
             print("\nxxxxxxxxx SOMETHINGS ERROR - TRY AGAIN xxxxxxxxxxxxx\n")
-            time.sleep(3)
+            time.sleep(1)
             continue
         
         time.sleep(1) 
@@ -563,7 +563,7 @@ if __name__ == "__main__":
         
         if rlt == False:
             print("\nxxxxxxxxx SOMETHINGS ERROR - TRY AGAIN xxxxxxxxxxxxx\n")
-            time.sleep(3)
+            time.sleep(1)
             continue
         
         time.sleep(1)
@@ -573,7 +573,7 @@ if __name__ == "__main__":
         
         if rlt == False:
             print("\nxxxxxxxxx SOMETHINGS ERROR - TRY AGAIN xxxxxxxxxxxxx\n")
-            time.sleep(3)
+            time.sleep(1)
             continue
         
         time.sleep(1)
@@ -583,11 +583,11 @@ if __name__ == "__main__":
         
         if rlt == False:
             print("\nxxxxxxxxx SOMETHINGS ERROR - TRY AGAIN xxxxxxxxxxxxx\n")
-            time.sleep(3)
+            time.sleep(1)
             continue
         
         print("\n>>>>>>>>>>>>>> WAIT MCU RESET AND RUNNING NEW APPLICATION FW.... \n")  
-        time.sleep(2)
+        time.sleep(1)
         
         mode_current = request_status_master(ID_master=ID_master_input, UDP_SOCKET=udp_params)
         
@@ -602,7 +602,7 @@ if __name__ == "__main__":
                 f"HOST '{HOST_INPUT}', PORT '{PORT_INPUT}' FAILURE xxxxx\n")
             log_to_file(f"FAILURE: UPDATED NEW APPLICATION ON MASTER '{ID_master_input}', HOST '{HOST_INPUT}', PORT '{PORT_INPUT}'")
         
-        time.sleep(5)
+        time.sleep(2)
     
     print("\n                          -------------> CLOSE PROGRAM <-----------\n")
 

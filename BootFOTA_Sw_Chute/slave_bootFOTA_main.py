@@ -358,7 +358,7 @@ def start_bootFota_process(ID_master, SQ_slave, UDP_SOCKET={}, addr_start=0, add
         sendto_master(mess_sent, UDP_SOCKET)
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_sent))
         
-        time.sleep(0.001)
+        # time.sleep(0.001)
         
         result = receive_startBootFota_response_slave(UDP_SOCKET, ID_master, SQ_slave)
         
@@ -410,7 +410,7 @@ def flashing_slave_process(ID_master, SQ_slave, UDP_SOCKET={}, _list_hex_data=[]
         sendto_master(mess_sent, UDP_SOCKET)    
         # print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_flash_data))
     
-        time.sleep(0.01)
+        # time.sleep(0.01)
         
         try:
             data_read, _ = UDP_SOCKET.socket.recvfrom(256)
@@ -469,7 +469,7 @@ def run_Application_fw_slave(ID_master, SQ_slave, UDP_SOCKET, stack_pointer, ver
         sendto_master(mess_sent, UDP_SOCKET)    
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_sent))
     
-        time.sleep(0.01)
+        # time.sleep(0.01)
     
         result = receive_runApp_fw_mess_slave(UDP_SOCKET, ID_master, SQ_slave)
         
@@ -493,7 +493,7 @@ def run_bootFOTA_Fw_slave(ID_master, SQ_slave, UDP_SOCKET={}, retry=10):
         sendto_master(mess_sent, UDP_SOCKET)
         print("-> [Sent] - ", " ".join(f"{b:02X}" for b in mess_sent))
         
-        time.sleep(0.01)
+        # time.sleep(0.01)
         
         result = receive_runFOTA_slave_response(UDP_SOCKET, ID_master, SQ_slave)
         
