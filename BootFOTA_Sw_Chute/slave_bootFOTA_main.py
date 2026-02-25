@@ -16,8 +16,8 @@ class UdpConnection:
         self.host = host
         self.port = port
 
-CMD_STATUS			=		0xA0
-CMD_RUN_BOOTLOADER	=       0xA1
+CMD_STATUS			=		0xB0
+CMD_RUN_BOOTLOADER	=       0xC0
 CMD_START_FLASHING	=       0xA2
 CMD_FLASHING		=		0xA3
 CMD_VERIFY_DATA		=	    0xA4

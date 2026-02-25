@@ -12,8 +12,8 @@ class UdpConnection:
         self.host = host
         self.port = port
 
-CMD_STATUS			=		0xA0
-CMD_RUN_BOOTLOADER	=       0xA1
+CMD_STATUS			=		0xB0
+CMD_RUN_BOOTLOADER	=       0xC0
 CMD_START_FLASHING	=       0xA2
 CMD_FLASHING		=		0xA3
 CMD_VERIFY_DATA		=	    0xA4
@@ -75,7 +75,7 @@ def receive_reset_master_response(UDP_SOCKET, ID_master):
 def build_mess_request_status_master(Identify: int)->bytearray:
     status_mess = bytearray(4)
     
-    status_mess[0] = 0xB0 | (Identify&0x0F)
+    status_mess[0] = CMD_STATUS | (Identify&0x0F)
     status_mess[1] = 4
     status_mess[2] = 0xA0
     status_mess[3] = crc8(status_mess, 4)
@@ -94,7 +94,7 @@ def receive_status_master(UDP_SOCKET, ID_master):
         if crc8(data_read, len(data_read)) == data_read[-1]     \
                         and data_read[0] != 0x00                \
                         and id_m == ID_master \
-                        and cmd == 0xB0:
+                        and cmd == CMD_STATUS:
             print("-> [Received] - ", " ".join(f"{b:02X}" for b in data_read))
     
             current_mode = data_read[3]
@@ -138,7 +138,7 @@ def receive_status_master(UDP_SOCKET, ID_master):
 def build_mess_run_bootFOTA_master(Identify: int) -> bytearray:
     runFOTA_mess = bytearray(4)
     
-    runFOTA_mess[0] = 0xC0 | (Identify & 0x0F)  # Byte đầu tiên
+    runFOTA_mess[0] = CMD_RUN_BOOTLOADER | (Identify & 0x0F)  # Byte đầu tiên
     runFOTA_mess[1] = 4                         # Độ dài gói
     runFOTA_mess[2] = 0x0C                      # Mã lệnh
     runFOTA_mess[3] = crc8(runFOTA_mess, 4)     # CRC8 checksum
@@ -156,7 +156,7 @@ def receive_runFOTA_master_response(UDP_SOCKET, ID_master):
         
         # Kiểm tra CRC và byte phản hồi hợp lệ
         if crc8(data_read, len(data_read)) == data_read[-1] \
-                                    and cmd == 0xC0 \
+                                    and cmd == CMD_RUN_BOOTLOADER \
                                     and id_m == ID_master \
                                     and data_read[0] != 0x00 :
             
